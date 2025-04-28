@@ -83,7 +83,7 @@ const loading = ref(true)
 // 搜索条件
 const searchParams = reactive<API.PictureQueryRequest>({
   current: 1,
-  pageSize: 12,
+  pageSize: 10,
   sortField: 'createTime',
   sortOrder: 'descend',
 })
@@ -107,6 +107,7 @@ const fetchData = async () => {
   })
   const res = await listPictureVoByPageUsingPost(params)
   if (res.data.code === 0 && res.data.data) {
+
     dataList.value = res.data.data.records ?? []
     total.value = res.data.data.total ?? 0
   } else {
