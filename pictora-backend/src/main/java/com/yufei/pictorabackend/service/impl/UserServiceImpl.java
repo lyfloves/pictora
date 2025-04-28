@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.yufei.pictorabackend.constant.UserConstant.ADMIN_ROLE;
@@ -115,6 +116,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
         }
         // 3. 记录用户登录态
+        // todo 保存到 redis
         request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE, user);
         return getLoginUserVO(user);
     }
@@ -145,6 +147,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (user == null) {
             return null;
         }
+
         LoginUserVO loginUserVO = new LoginUserVO();
         BeanUtil.copyProperties(user, loginUserVO);
         return loginUserVO;
@@ -191,6 +194,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      */
     @Override
     public User getLoginUser(HttpServletRequest request) {
+        // todo 从 redis 中获取登录用户
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         ThrowUtils.throwIf(userObj == null, ErrorCode.NOT_LOGIN_ERROR);
         User loginUser = (User) userObj;
